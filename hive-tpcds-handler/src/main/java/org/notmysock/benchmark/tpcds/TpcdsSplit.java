@@ -5,11 +5,12 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
 import com.teradata.tpcds.Session;
 import com.teradata.tpcds.Table;
 
-public final class TpcdsSplit extends InputSplit
+public final class TpcdsSplit extends FileSplit
     implements org.apache.hadoop.mapred.InputSplit {
 
   private static final String[] EMPTY_ARRAY = new String[0];
@@ -41,8 +42,8 @@ public final class TpcdsSplit extends InputSplit
     return child;
   }
 
-  @Override
-  public long getLength() throws IOException {
+
+  public long getLength() {
     return 0;
   }
 
