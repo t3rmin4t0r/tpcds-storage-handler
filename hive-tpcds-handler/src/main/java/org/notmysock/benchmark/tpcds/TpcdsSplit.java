@@ -70,7 +70,7 @@ public final class TpcdsSplit extends InputSplit
   public Session getSession() {
     return Session.getDefaultSession().withScale(scale)
         .withTable(Table.getTable(table)).withParallelism(parallel)
-        .withChunkNumber(child);
+        .withChunkNumber(child+1);
   }
 
 }

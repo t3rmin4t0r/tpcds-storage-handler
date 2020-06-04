@@ -124,6 +124,9 @@ public class TextTpcdsSerDe extends AbstractSerDe {
 
   private static Object parse(String value, TypeInfo typeInfo) throws SerDeException {
     PrimitiveTypeInfo pti = (PrimitiveTypeInfo) typeInfo;
+    if (value == null) {
+      return value;
+    }
     if (value.isEmpty()) {
       if (!(PrimitiveObjectInspectorUtils
           .getPrimitiveGrouping(pti.getPrimitiveCategory()) == STRING_GROUP)) {

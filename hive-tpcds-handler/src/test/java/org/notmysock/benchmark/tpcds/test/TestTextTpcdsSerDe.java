@@ -18,6 +18,7 @@ import org.notmysock.benchmark.tpcds.TpcdsInputFormat;
 import org.notmysock.benchmark.tpcds.TpcdsRow;
 import org.notmysock.benchmark.tpcds.TpcdsTableProperties;
 
+import com.teradata.tpcds.Table;
 import com.teradata.tpcds.column.Column;
 import com.teradata.tpcds.column.ColumnType;
 import com.teradata.tpcds.column.ColumnType.Base;
@@ -29,12 +30,13 @@ public class TestTextTpcdsSerDe {
   public void testSerDeParsing() throws IOException, SerDeException {
     Integer scale = 1;
     JobConf jobConf = new JobConf();
-    jobConf.set(TpcdsTableProperties.TABLE_NAME.getKey(), "store_sales");
+    Table table = Table.INVENTORY;
+    jobConf.set(TpcdsTableProperties.TABLE_NAME.getKey(), table.getName());
     jobConf.set(TpcdsTableProperties.SCALE.getKey(), scale.toString());
     TpcdsInputFormat inputformat = new TpcdsInputFormat();
     InputSplit[] splits = inputformat.getSplits(jobConf, 1);
     RecordReader<NullWritable, TpcdsRow> reader = inputformat.getRecordReader(splits[0], jobConf, null);
-    Column[] columns = com.teradata.tpcds.Table.STORE_SALES.getColumns();
+    Column[] columns = table.getColumns();
     
     StringBuilder columnNames = new StringBuilder();
     StringBuilder columnTypes = new StringBuilder();
@@ -60,9 +62,12 @@ public class TestTextTpcdsSerDe {
     
     NullWritable key = reader.createKey();
     TpcdsRow value = reader.createValue();
+    long count = 0;
     while(reader.next(key, value)) {
       Object deserialize = serde.deserialize(value);
+      count++;
     }
+    System.out.println("Got " + count);
   }
   
   private static String columnTypeToHive(ColumnType ct) {
