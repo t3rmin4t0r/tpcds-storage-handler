@@ -5,7 +5,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import org.apache.hadoop.mapreduce.InputSplit;
-import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.mapred.FileSplit;
 
 import com.teradata.tpcds.Session;
 import com.teradata.tpcds.Table;
