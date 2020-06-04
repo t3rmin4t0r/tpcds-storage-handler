@@ -16,7 +16,7 @@ public class TestTpcdsRowReader {
   @Test
   public void testDateDimReader() throws IOException {
     Configuration conf = new  Configuration();
-    TpcdsSplit split = new TpcdsSplit("date_dim", 1, 1, 1);
+    TpcdsSplit split = new TpcdsSplit("date_dim", 1, 1, 1, null);
     try (TpcdsRowReader reader = new TpcdsRowReader(split, conf)) {
       NullWritable key = reader.createKey();
       TpcdsRow value = reader.createValue();
@@ -29,7 +29,7 @@ public class TestTpcdsRowReader {
   @Test
   public void testStoreReturnsReader() throws IOException {
     Configuration conf = new  Configuration();
-    TpcdsSplit split = new TpcdsSplit("store_returns", 1, 1, 1);
+    TpcdsSplit split = new TpcdsSplit("store_returns", 1, 1, 1, null);
     try (TpcdsRowReader reader = new TpcdsRowReader(split, conf)) {
       NullWritable key = reader.createKey();
       TpcdsRow value = reader.createValue();

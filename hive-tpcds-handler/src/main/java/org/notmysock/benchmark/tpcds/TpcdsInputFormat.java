@@ -3,6 +3,7 @@ package org.notmysock.benchmark.tpcds;
 import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.ql.exec.Utilities;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedInputFormatInterface;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedSupport;
@@ -31,19 +32,20 @@ public class TpcdsInputFormat implements
     return computeSplits(jobConf);
   }
 
-  private InputSplit[] computeSplits(Configuration conf) {
-    String table = conf.get(TpcdsTableProperties.TABLE_NAME.getKey());
-    int scale = Integer.parseInt(conf.get(TpcdsTableProperties.SCALE.getKey()));
+  private InputSplit[] computeSplits(JobConf jobConf) {
+    String table = jobConf.get(TpcdsTableProperties.TABLE_NAME.getKey());
+    int scale = Integer.parseInt(jobConf.get(TpcdsTableProperties.SCALE.getKey()));
     int parallel = Integer
-        .parseInt(conf.get(TpcdsTableProperties.PARALLEL.getKey(), ""+scale));
+        .parseInt(jobConf.get(TpcdsTableProperties.PARALLEL.getKey(), ""+scale));
 
     Table t = Table.getTable(table);
+    Path[] tablePaths = org.apache.hadoop.mapred.FileInputFormat.getInputPaths(jobConf);
     if (t.isSmall()) {
-      return new InputSplit[] { new TpcdsSplit(table, scale, parallel, 0) };
+      return new InputSplit[] { new TpcdsSplit(table, scale, parallel, 0, tablePaths[0]) };
     }
     InputSplit[] splits = new InputSplit[parallel];
     for (int i = 0; i < parallel; i++) {
-      splits[i] = new TpcdsSplit(table, scale, parallel, i);
+      splits[i] = new TpcdsSplit(table, scale, parallel, i, tablePaths[0]);
     }
     return splits;
   }

@@ -5,6 +5,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.FileSplit;
 
 import com.teradata.tpcds.Session;
@@ -18,12 +19,17 @@ public final class TpcdsSplit extends FileSplit
   private int scale;
   private int parallel;
   private int child;
-  
-  public TpcdsSplit(String table, int scale, int parallel, int child) {
+  private Path dummyPath;
+
+  public TpcdsSplit() {
+  }
+
+  public TpcdsSplit(String table, int scale, int parallel, int child, Path dummyPath) {
     this.table = table;
     this.scale = scale;
     this.parallel = parallel;
     this.child = child;
+    this.dummyPath = dummyPath;
   }
 
   public int getScale() {
@@ -41,7 +47,12 @@ public final class TpcdsSplit extends FileSplit
   public int getChild() {
     return child;
   }
-
+  
+  @Override
+  public Path getPath() {
+    // this stupid, but we're using FileSplit for everything
+    return dummyPath;
+  }
 
   public long getLength() {
     return 0;
@@ -58,6 +69,7 @@ public final class TpcdsSplit extends FileSplit
     this.scale = input.readInt();
     this.parallel = input.readInt();
     this.child = input.readInt();
+    this.dummyPath = new Path(input.readUTF());
   }
 
   @Override
@@ -66,6 +78,7 @@ public final class TpcdsSplit extends FileSplit
     output.writeInt(scale);
     output.writeInt(parallel);
     output.writeInt(child);
+    output.writeUTF(dummyPath.toString());
   }
   
   public Session getSession() {
