@@ -1,0 +1,3 @@
+[submodule "tpcds-java-generator"]
+	path = tpcds-java-generator
+	url = https://github.com/t3rmin4t0r/tpcds-java.git
