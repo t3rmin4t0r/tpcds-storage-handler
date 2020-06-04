@@ -55,7 +55,8 @@ public final class TpcdsSplit extends FileSplit
   }
 
   public long getLength() {
-    return 0;
+    // approx 1Gb per scale factor
+    return 1024*1024*1024;
   }
 
   @Override
